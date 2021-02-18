@@ -112,7 +112,7 @@ namespace ConwaysGameOfLife.Api
             var state = InitialState;
 
             for (var g = 0; g < generation; g++)
-                state = GridState.FromDiff(state, _tickRule.Tick(ref state));
+                state = GridState.FromDiff(state, _tickRule.Tick(in state));
 
             return state;
         }

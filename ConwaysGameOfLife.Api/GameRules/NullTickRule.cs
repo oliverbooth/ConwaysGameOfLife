@@ -6,7 +6,7 @@
     public sealed class NullTickRule : TickRule
     {
         /// <inheritdoc />
-        public override GridStateDiff Tick(ref GridState gridState)
+        public override GridStateDiff Tick(in GridState gridState)
         {
             return GridStateDiff.Null;
         }

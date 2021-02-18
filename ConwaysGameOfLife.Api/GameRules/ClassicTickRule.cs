@@ -8,18 +8,18 @@ namespace ConwaysGameOfLife.Api.GameRules
     public class ClassicTickRule : TickRule
     {
         /// <inheritdoc />
-        public override GridStateDiff Tick(ref GridState gridState)
+        public override GridStateDiff Tick(in GridState gridState)
         {
             var modifiedCells = new List<Cell>();
 
             foreach (var livingCell in gridState.LivingCells)
             {
-                if (IsOverpopulated(ref gridState, livingCell) || IsUnderpopulated(ref gridState, livingCell))
+                if (IsOverpopulated(in gridState, livingCell) || IsUnderpopulated(in gridState, livingCell))
                     modifiedCells.Add(new Cell(livingCell.Location, CellState.Dead));
 
                 foreach (var cell in gridState.GetNeighbours(livingCell))
                 {
-                    if (ShouldRepopulate(ref gridState, cell))
+                    if (ShouldRepopulate(in gridState, cell))
                         modifiedCells.Add(new Cell(cell.Location));
                 }
             }
@@ -27,13 +27,13 @@ namespace ConwaysGameOfLife.Api.GameRules
             return new GridStateDiff(modifiedCells);
         }
 
-        private static bool ShouldRepopulate(ref GridState gridState, Cell cell) =>
+        private static bool ShouldRepopulate(in GridState gridState, Cell cell) =>
             !cell.IsAlive && gridState.GetLivingNeighbours(cell).Count == 3;
 
-        private static bool IsOverpopulated(ref GridState gridState, Cell cell) =>
+        private static bool IsOverpopulated(in GridState gridState, Cell cell) =>
             gridState.GetLivingNeighbours(cell).Count > 3;
 
-        private static bool IsUnderpopulated(ref GridState gridState, Cell cell) =>
+        private static bool IsUnderpopulated(in GridState gridState, Cell cell) =>
             gridState.GetLivingNeighbours(cell).Count < 2;
     }
 }

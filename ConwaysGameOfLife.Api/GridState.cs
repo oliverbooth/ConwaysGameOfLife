@@ -143,7 +143,7 @@ namespace ConwaysGameOfLife.Api
         /// <remarks>
         ///     All cells returned by this method will have a <see cref="Cell.State" /> of <see cref="CellState.Alive" />.
         /// </remarks>
-        public IReadOnlyCollection<Cell> GetLivingNeighbours(Cell cell)
+        public readonly IReadOnlyCollection<Cell> GetLivingNeighbours(Cell cell)
         {
             return GetNeighbours(cell).Where(n => n.IsAlive).ToArray();
         }
@@ -154,7 +154,7 @@ namespace ConwaysGameOfLife.Api
         /// <param name="cell">The cell whose neighbour to get.</param>
         /// <returns>A collection of all adjacent neighbours to <paramref name="cell" />.</returns>
         /// <remarks>This method does not ignore dead cells. Both living and dead neighbours are captured.</remarks>
-        public IReadOnlyCollection<Cell> GetNeighbours(Cell cell)
+        public readonly IReadOnlyCollection<Cell> GetNeighbours(Cell cell)
         {
             var directions = new[]
             {

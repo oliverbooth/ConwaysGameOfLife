@@ -10,6 +10,6 @@
         /// </summary>
         /// <param name="gridState">The state of the grid on which to tick.</param>
         /// <returns>An instance of <see cref="GridStateDiff" /> indicating changes in cell state.</returns>
-        public abstract GridStateDiff Tick(ref GridState gridState);
+        public abstract GridStateDiff Tick(in GridState gridState);
     }
 }

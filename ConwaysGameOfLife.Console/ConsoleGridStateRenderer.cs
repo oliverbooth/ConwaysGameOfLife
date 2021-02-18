@@ -50,7 +50,7 @@ namespace ConwaysGameOfLife.Console
         public Size ViewportOffset { get; set; } = Size.Empty;
 
         /// <inheritdoc />
-        public override void Render(GridState grid)
+        public override void Render(in GridState grid)
         {
             _console.Clear(_dead, _deadChar);
 

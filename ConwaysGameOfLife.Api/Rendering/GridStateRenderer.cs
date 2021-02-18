@@ -9,6 +9,6 @@
         ///     Renders the grid state using the defined rendering method.
         /// </summary>
         /// <param name="grid">The grid state to render.</param>
-        public abstract void Render(GridState grid);
+        public abstract void Render(in GridState grid);
     }
 }

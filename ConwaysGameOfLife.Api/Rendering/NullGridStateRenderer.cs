@@ -6,7 +6,7 @@
     public sealed class NullGridStateRenderer : GridStateRenderer
     {
         /// <inheritdoc />
-        public override void Render(GridState grid)
+        public override void Render(in GridState grid)
         {
             // do nothing
         }
