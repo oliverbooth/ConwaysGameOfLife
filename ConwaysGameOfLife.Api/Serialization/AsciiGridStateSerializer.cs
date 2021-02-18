@@ -54,9 +54,9 @@ namespace ConwaysGameOfLife.Api.Serialization
             using var writer = new StreamWriter(outputStream, Encoding.ASCII);
             var bounds = state.Bounds;
 
-            for (int y = bounds.Min.Y - 1; y <= bounds.Max.Y; y++)
+            for (int y = bounds.Min.Y; y <= bounds.Max.Y; y++)
             {
-                for (int x = bounds.Min.X - 1; x <= bounds.Max.X; x++)
+                for (int x = bounds.Min.X; x <= bounds.Max.X; x++)
                 {
                     var point = new Point(x, y);
                     writer.Write(state[point] == CellState.Alive ? LivingCellChar : DeadCellChar);

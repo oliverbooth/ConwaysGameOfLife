@@ -56,16 +56,16 @@ namespace ConwaysGameOfLife.Api
         {
             get
             {
-                var minPoint = Point.Empty;
-                var maxPoint = Point.Empty;
+                Point? minPoint = null;
+                Point? maxPoint = null;
 
                 foreach (var cell in LivingCells.Where(c => c.IsAlive))
                 {
-                    minPoint = minPoint.Min(cell.Location);
-                    maxPoint = maxPoint.Max(cell.Location);
+                    minPoint = minPoint?.Min(cell.Location) ?? cell.Location;
+                    maxPoint = maxPoint?.Max(cell.Location) ?? cell.Location;
                 }
 
-                return new Bounds(minPoint, maxPoint);
+                return new Bounds(minPoint ?? Point.Empty, maxPoint ?? Point.Empty);
             }
         }
 
