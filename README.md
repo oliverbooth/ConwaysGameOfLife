@@ -1,7 +1,7 @@
 # Conway's Game of Life
 A scalable .NET 5 implementation of Conway's Game of Life written in C#.
 
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/oliverbooth/ConwaysGameOfLife/dotnet)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/oliverbooth/ConwaysGameOfLife/.NET)
 ![GitHub open issues](https://img.shields.io/github/issues/oliverbooth/ConwaysGameOfLife)
 ![GitHub last commit](https://img.shields.io/github/last-commit/oliverbooth/ConwaysGameOfLife)
 ![GitHub repo size](https://img.shields.io/github/repo-size/oliverbooth/ConwaysGameOfLife)
