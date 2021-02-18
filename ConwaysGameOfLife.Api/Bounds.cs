@@ -62,7 +62,13 @@ namespace ConwaysGameOfLife.Api
         public override bool Equals(object? obj) => obj is Bounds other && Equals(other);
 
         /// <inheritdoc />
-        public override int GetHashCode() => HashCode.Combine(Min, Max);
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return (Min.GetHashCode() * 397) ^ Max.GetHashCode();
+            }
+        }
 
         /// <inheritdoc />
         public override string ToString() => $"{{ Min={Min}, Max={Max}, Size={Size} }}";

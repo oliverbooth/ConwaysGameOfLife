@@ -15,7 +15,7 @@ namespace ConwaysGameOfLife.Api
         /// <param name="state">Optional. The state of the cell. Defaults to <see cref="CellState.Alive" />.</param>
         public Cell(Point location, CellState state = CellState.Alive)
         {
-            if (!Enum.IsDefined(state))
+            if (!Enum.IsDefined(typeof(CellState), state))
                 throw new ArgumentOutOfRangeException(nameof(state), $"Cell can only be {CellState.Alive} or {CellState.Dead}");
 
             Location = location;

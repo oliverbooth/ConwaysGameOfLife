@@ -12,7 +12,7 @@ namespace ConwaysGameOfLife.Api
         /// <summary>
         ///     Represents the null grid state diff, in that
         /// </summary>
-        public static readonly GridStateDiff Null = new(ArraySegment<Cell>.Empty);
+        public static readonly GridStateDiff Null = new(Array.Empty<Cell>());
 
         private readonly List<Cell>? _changedCells;
 
@@ -32,7 +32,6 @@ namespace ConwaysGameOfLife.Api
         /// <value>
         ///     An <see cref="IReadOnlyCollection{T}" /> of <see cref="Cell" /> which indicates cell whose states that changed.
         /// </value>
-        [NotNull]
-        public IReadOnlyCollection<Cell> ChangedCells => _changedCells?.ToArray() ?? ArraySegment<Cell>.Empty;
+        public IReadOnlyCollection<Cell> ChangedCells => _changedCells?.ToArray() ?? Array.Empty<Cell>();
     }
 }
