@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Drawing;
+using System.IO;
+using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using Console.Abstractions;
 using ConwaysGameOfLife.Api;
+using ConwaysGameOfLife.Api.Serialization;
 using ConwaysGameOfLife.Console;
 
 namespace ConwaysGameOfLife
@@ -36,7 +39,29 @@ namespace ConwaysGameOfLife
             System.Console.Title = "Conway's Game of Life";
             _options = options;
 
-            var initialState = FetchInitialState();
+            GridState initialState;
+
+            if (options.GridFile is { } file)
+            {
+                using var stream = File.OpenRead(file);
+                try
+                {
+                    initialState = new BinaryGridStateSerializer().Read(stream);
+                }
+                catch (SerializationException)
+                {
+                    initialState = new AsciiGridStateSerializer().Read(stream);
+                }
+
+                new ConsoleGridStateRenderer(_console).Render(initialState);
+
+                while (_console.ReadKey(true).Key != ConsoleKey.Enter) ;
+            }
+            else
+            {
+                initialState = FetchInitialState();
+            }
+
             _console.Clear(PutDataDefaults.BlackOnBlack);
             System.Console.CursorVisible = false;
 
@@ -88,8 +113,8 @@ namespace ConwaysGameOfLife
                         paused = true;
                         break;
 
-                    case ConsoleKey.S:
-                        _simulation.Save("last-grid.txt");
+                    case ConsoleKey.F5:
+                        _simulation.Save($"grid-{DateTime.Now:yyyyMMddHHmmss}.dat", SerializationMode.Binary);
                         break;
 
                     case ConsoleKey.UpArrow:

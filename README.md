@@ -9,11 +9,20 @@ A scalable .NET 5 implementation of Conway's Game of Life written in C#.
 ---
 
 ## Using the app
-Start the app, optionally with the `--tick-rate #` flag to specify how quickly the simulation should run.
 
 Initialize your grid by using the arrow keys to move the cursor, and hitting space to toggle a cell's living/dead state.
 
 Once the grid is set, hit Enter to begin the simulation. While the simulation is running, you can use the arrow keys to pan around the grid so that you can view cells that are beyond the viewport.
+
+Hit Enter (or Space) at any point to pause the simulation, and Enter (or Space) again to resume it.
+
+### Setting the tick rate
+By default, the simulation runs at 1 tick per second (tps). This is changeable using the `--tick-rate` command-line flag. The delay between ticks is 1/rate.
+
+### Saving/loading states
+At any point during the simulation, you can hit F5 to store the state of the grid to disk. By default this will store it a binary encoded file named `grid-CURRENTTIME.dat`.
+
+You can load a state by using the `--load` command-line flag, and specifying the filename to load.
 
 ---
 

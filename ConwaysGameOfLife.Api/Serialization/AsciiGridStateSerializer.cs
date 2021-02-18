@@ -9,8 +9,8 @@ namespace ConwaysGameOfLife.Api.Serialization
     ///     Represents a <see cref="GridStateSerializer" /> which serializes a state using ASCII characters.
     /// </summary>
     /// <remarks>
-    ///     Since a Conway's Game of Life grid is infinite in size, this renderer will use the upper-left bound of the grid as its
-    ///     0, 0 point.
+    ///     Since a Conway's Game of Life grid is infinite in size, and there is no way to represent this in ASCII, this renderer
+    ///     will use the upper-left bound of the grid as its 0, 0 point.
     /// </remarks>
     public class AsciiGridStateSerializer : GridStateSerializer
     {

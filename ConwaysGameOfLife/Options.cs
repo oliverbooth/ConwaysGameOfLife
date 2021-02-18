@@ -17,6 +17,13 @@ namespace ConwaysGameOfLife
         public int Generations { get; set; } = -1;
 
         /// <summary>
+        ///     Gets or sets the <c>load</c> option.
+        /// </summary>
+        [Option('f', "load", Required = false, Default = null,
+            HelpText = "The grid file to load")]
+        public string? GridFile { get; set; } = null;
+
+        /// <summary>
         ///     Gets or sets the <c>tick-rate</c> option.
         /// </summary>
         [Option('r', "tick-rate", Required = false, Default = 1.0,

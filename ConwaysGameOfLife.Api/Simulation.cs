@@ -166,7 +166,7 @@ namespace ConwaysGameOfLife.Api
             Save(stream, serializationMode switch
             {
                 SerializationMode.Ascii => new AsciiGridStateSerializer(),
-                SerializationMode.Binary => throw new NotSupportedException("Binary serialization is not yet supported"),
+                SerializationMode.Binary => new BinaryGridStateSerializer(),
                 _ => throw new ArgumentOutOfRangeException(nameof(serializationMode))
             });
         }
