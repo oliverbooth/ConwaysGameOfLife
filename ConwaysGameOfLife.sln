@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConwaysGameOfLife", "ConwaysGameOfLife\ConwaysGameOfLife.csproj", "{F34FCF4F-0A86-4A3D-AB04-58B4FFEE7ECB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConwaysGameOfLife.Api", "ConwaysGameOfLife.Api\ConwaysGameOfLife.Api.csproj", "{0EEB74AF-49E7-45A4-8D87-CA85764D0A4F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConwaysGameOfLife.Console", "ConwaysGameOfLife.Console\ConwaysGameOfLife.Console.csproj", "{9DBDCE67-4460-417F-8946-94002620B817}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F34FCF4F-0A86-4A3D-AB04-58B4FFEE7ECB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F34FCF4F-0A86-4A3D-AB04-58B4FFEE7ECB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F34FCF4F-0A86-4A3D-AB04-58B4FFEE7ECB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F34FCF4F-0A86-4A3D-AB04-58B4FFEE7ECB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0EEB74AF-49E7-45A4-8D87-CA85764D0A4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0EEB74AF-49E7-45A4-8D87-CA85764D0A4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0EEB74AF-49E7-45A4-8D87-CA85764D0A4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0EEB74AF-49E7-45A4-8D87-CA85764D0A4F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9DBDCE67-4460-417F-8946-94002620B817}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9DBDCE67-4460-417F-8946-94002620B817}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9DBDCE67-4460-417F-8946-94002620B817}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9DBDCE67-4460-417F-8946-94002620B817}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

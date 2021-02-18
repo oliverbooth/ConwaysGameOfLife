@@ -1,0 +1,219 @@
+﻿using System;
+using System.Drawing;
+using System.Threading;
+using System.Threading.Tasks;
+using Console.Abstractions;
+using ConwaysGameOfLife.Api;
+using ConwaysGameOfLife.Console;
+
+namespace ConwaysGameOfLife
+{
+    /// <summary>
+    ///     Represents an application implementation.
+    /// </summary>
+    internal class GameOfLifeApp
+    {
+        private static readonly Random Random = new();
+        private readonly IConsole _console = new SystemConsole();
+        private readonly ConsoleGridStateRenderer _renderer;
+        private Simulation _simulation = null!;
+        private Options _options = new();
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="GameOfLifeApp" /> class.
+        /// </summary>
+        public GameOfLifeApp()
+        {
+            _renderer = new ConsoleGridStateRenderer(_console);
+        }
+
+        /// <summary>
+        ///     Runs the application.
+        /// </summary>
+        /// <param name="options">The options parsed from the command line.</param>
+        public void Run(Options options)
+        {
+            System.Console.Title = "Conway's Game of Life";
+            _options = options;
+
+            var initialState = FetchInitialState();
+            _console.Clear(PutDataDefaults.BlackOnBlack);
+            System.Console.CursorVisible = false;
+
+            _simulation = new Simulation(initialState)
+            {
+                Renderer = _renderer,
+                TickRate = options.TickRate
+            };
+
+            var cancellationTokenSource = new CancellationTokenSource();
+            var simulationTask = CreateSimulationTask(cancellationTokenSource);
+            var titleTask = CreateUpdateTitleTask(cancellationTokenSource);
+
+            simulationTask.Start();
+            titleTask.Start();
+
+            InputLoop(ref simulationTask, ref titleTask, ref cancellationTokenSource);
+        }
+
+        private void InputLoop(ref Task simulationTask, ref Task titleTask, ref CancellationTokenSource cancellationTokenSource)
+        {
+            var paused = false;
+            while (true)
+            {
+                var key = _console.ReadKey(true).Key;
+                var quit = false;
+
+                switch (key)
+                {
+                    case ConsoleKey.Escape:
+                        quit = true;
+                        break;
+
+                    case ConsoleKey.Enter when paused:
+                    case ConsoleKey.Spacebar when paused:
+                        cancellationTokenSource = new CancellationTokenSource();
+                        simulationTask = CreateSimulationTask(cancellationTokenSource);
+                        titleTask = CreateUpdateTitleTask(cancellationTokenSource);
+
+                        simulationTask.Start();
+                        titleTask.Start();
+
+                        paused = false;
+                        break;
+
+                    case ConsoleKey.Enter when !paused:
+                    case ConsoleKey.Spacebar when !paused:
+                        cancellationTokenSource.Cancel();
+                        paused = true;
+                        break;
+
+                    case ConsoleKey.S:
+                        _simulation.Save("last-grid.txt");
+                        break;
+
+                    case ConsoleKey.UpArrow:
+                        _renderer.ViewportOffset -= Direction.Up;
+                        break;
+
+                    case ConsoleKey.DownArrow:
+                        _renderer.ViewportOffset -= Direction.Down;
+                        break;
+
+                    case ConsoleKey.LeftArrow:
+                        _renderer.ViewportOffset -= Direction.Left;
+                        break;
+
+                    case ConsoleKey.RightArrow:
+                        _renderer.ViewportOffset -= Direction.Right;
+                        break;
+                }
+
+                if (quit) break;
+            }
+        }
+
+        private Task CreateSimulationTask(CancellationTokenSource cancellationTokenSource) =>
+            new(async () => await SimulationWorker(cancellationTokenSource), cancellationTokenSource.Token);
+
+        private async Task SimulationWorker(CancellationTokenSource cancellationTokenSource)
+        {
+            try
+            {
+                await _simulation.RunAsync(_options.Generations, cancellationTokenSource.Token);
+            }
+            catch (TaskCanceledException)
+            {
+                // ignored
+            }
+        }
+
+        private Task CreateUpdateTitleTask(CancellationTokenSource cancellationTokenSource) =>
+            new(() => UpdateTitleWorker(cancellationTokenSource), cancellationTokenSource.Token);
+
+        private void UpdateTitleWorker(CancellationTokenSource cancellationTokenSource)
+        {
+            while (!cancellationTokenSource.IsCancellationRequested)
+                System.Console.Title = $"Gen. #{_simulation.Generation}";
+
+            System.Console.Title = "**PAUSED**";
+        }
+
+        private GridState FetchInitialState()
+        {
+            _console.Clear(PutDataDefaults.BlackOnBlack);
+
+            var gridState = new GridState();
+            var cursorPosition = Point.Empty;
+            var done = false;
+
+            while (!done)
+            {
+                var key = _console.ReadKey(true).Key;
+
+                switch (key)
+                {
+                    case ConsoleKey.Spacebar:
+                        gridState.SetStateAt(cursorPosition, gridState[cursorPosition].Opposite());
+                        break;
+
+                    case ConsoleKey.UpArrow:
+                        cursorPosition += Direction.Up;
+                        break;
+
+                    case ConsoleKey.DownArrow:
+                        cursorPosition += Direction.Down;
+                        break;
+
+                    case ConsoleKey.LeftArrow:
+                        cursorPosition += Direction.Left;
+                        break;
+
+                    case ConsoleKey.RightArrow:
+                        cursorPosition += Direction.Right;
+                        break;
+
+                    case ConsoleKey.Enter:
+                        done = true;
+                        break;
+
+                    case ConsoleKey.F: // random fill
+                        for (int rx = 0; rx < _console.Width - 1; rx++)
+                        for (int ry = 0; ry < _console.Height - 1; ry++)
+                        {
+                            var point = new Point(rx, ry);
+                            gridState.SetStateAt(point, Random.NextDouble() > 0.5 ? CellState.Alive : CellState.Dead);
+                        }
+
+                        break;
+
+                    case ConsoleKey.G: // partial fill
+                        for (int i = 0; i < 50; i++)
+                        {
+                            var x = Random.Next(0, _console.Width - 1);
+                            var y = Random.Next(0, _console.Height - 1);
+                            gridState.SetStateAt(new Point(x, y), CellState.Alive);
+                        }
+
+                        break;
+
+                    case ConsoleKey.R: // reset
+                        for (int rx = 0; rx < _console.Width - 1; rx++)
+                        for (int ry = 0; ry < _console.Height - 1; ry++)
+                            gridState.SetStateAt(new Point(rx, ry), CellState.Dead);
+
+                        break;
+                }
+
+                _renderer.Render(gridState);
+
+                var cursorX = Math.Clamp(cursorPosition.X, 0, _console.Width - 1);
+                var cursorY = Math.Clamp(cursorPosition.Y, 0, _console.Height - 1);
+                cursorPosition = new Point(cursorX, cursorY);
+                System.Console.SetCursorPosition(cursorX, cursorY);
+            }
+
+            return gridState;
+        }
+    }
+}
