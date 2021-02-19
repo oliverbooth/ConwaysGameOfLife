@@ -1,5 +1,4 @@
 ﻿using System.Drawing;
-using System.Linq;
 using Console.Abstractions;
 using ConwaysGameOfLife.Api;
 using ConwaysGameOfLife.Api.Rendering;
@@ -9,16 +8,17 @@ namespace ConwaysGameOfLife.Console
     /// <summary>
     ///     Represents a renderer which renders a <see cref="GridState" /> to a target <see cref="IConsole" />.
     /// </summary>
-    public sealed class ConsoleGridStateRenderer : GridStateRenderer
+    public sealed class ConsoleRenderer : IRenderer
     {
         private readonly IConsole _console;
         private readonly char _aliveChar;
         private readonly char _deadChar;
         private readonly PutData _alive;
         private readonly PutData _dead;
+        private bool _oneShotFullRender;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="ConsoleGridStateRenderer" /> class.
+        ///     Initializes a new instance of the <see cref="ConsoleRenderer" /> class.
         /// </summary>
         /// <param name="console">The console to which this renderer should render.</param>
         /// <param name="aliveChar">Optional. The character with which to render living cells. Defaults to a space.</param>
@@ -31,7 +31,7 @@ namespace ConwaysGameOfLife.Console
         ///     Optional. A <see cref="PutData" /> indicating how dead cells should be rendered.
         ///     Defaults to <see cref="PutDataDefaults.BlackOnBlack" />.
         /// </param>
-        public ConsoleGridStateRenderer(
+        public ConsoleRenderer(
             IConsole console,
             char aliveChar = ' ',
             char deadChar = ' ',
@@ -56,12 +56,18 @@ namespace ConwaysGameOfLife.Console
         public Size ViewportOffset { get; set; } = Size.Empty;
 
         /// <inheritdoc />
-        public override void Render(in GridState grid, in GridStateDiff diff)
+        public void Clear()
         {
-            if (FullRender)
+            _oneShotFullRender = true;
+        }
+
+        /// <inheritdoc />
+        public void Render(in GridState grid, in GridStateDiff diff)
+        {
+            if (FullRender || _oneShotFullRender)
                 _console.Clear(_dead);
-            
-            foreach (var cell in FullRender ? grid.LivingCells : diff.ChangedCells)
+
+            foreach (var cell in FullRender || _oneShotFullRender ? grid.LivingCells : diff.ChangedCells)
             {
                 var location = cell.Location + ViewportOffset;
 
@@ -71,6 +77,8 @@ namespace ConwaysGameOfLife.Console
                 _console.PutChar(cell.IsAlive ? _aliveChar : _deadChar,
                     (cell.IsAlive ? _alive : _dead) with { X = location.X, Y = location.Y });
             }
+
+            _oneShotFullRender = false;
         }
     }
 }

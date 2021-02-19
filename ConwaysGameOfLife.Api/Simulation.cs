@@ -15,7 +15,7 @@ namespace ConwaysGameOfLife.Api
     public sealed class Simulation
     {
         private TickRule _tickRule = new ClassicTickRule();
-        private GridStateRenderer _renderer = new NullGridStateRenderer();
+        private IRenderer _renderer = new NullRenderer();
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Simulation" /> class by initializing all cells as dead.
@@ -75,10 +75,10 @@ namespace ConwaysGameOfLife.Api
         /// </summary>
         /// <value>The renderer.</value>
         [SuppressMessage("ReSharper", "ConstantNullCoalescingCondition", Justification = "Assigned value may be null")]
-        public GridStateRenderer Renderer
+        public IRenderer Renderer
         {
             get => _renderer;
-            set => _renderer = value ?? new NullGridStateRenderer();
+            set => _renderer = value ?? new NullRenderer();
         }
 
         /// <summary>

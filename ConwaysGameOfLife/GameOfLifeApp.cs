@@ -18,7 +18,7 @@ namespace ConwaysGameOfLife
     {
         private static readonly Random Random = new();
         private readonly IConsole _console = new SystemConsole();
-        private readonly ConsoleGridStateRenderer _renderer;
+        private readonly ConsoleRenderer _renderer;
         private Simulation _simulation = null!;
         private Options _options = new();
 
@@ -27,7 +27,7 @@ namespace ConwaysGameOfLife
         /// </summary>
         public GameOfLifeApp()
         {
-            _renderer = new ConsoleGridStateRenderer(_console);
+            _renderer = new ConsoleRenderer(_console);
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace ConwaysGameOfLife
                     initialState = new AsciiGridStateSerializer().Read(stream);
                 }
 
-                new ConsoleGridStateRenderer(_console).Render(initialState, GridStateDiff.Null);
+                new ConsoleRenderer(_console).Render(initialState, GridStateDiff.Null);
 
                 while (_console.ReadKey(true).Key != ConsoleKey.Enter) ;
             }
@@ -86,6 +86,7 @@ namespace ConwaysGameOfLife
             var paused = false;
             while (true)
             {
+                _renderer.FullRender = false;
                 var key = _console.ReadKey(true).Key;
                 var quit = false;
 
@@ -118,18 +119,22 @@ namespace ConwaysGameOfLife
                         break;
 
                     case ConsoleKey.UpArrow:
+                        _renderer.Clear();
                         _renderer.ViewportOffset -= Direction.Up;
                         break;
 
                     case ConsoleKey.DownArrow:
+                        _renderer.Clear();
                         _renderer.ViewportOffset -= Direction.Down;
                         break;
 
                     case ConsoleKey.LeftArrow:
+                        _renderer.Clear();
                         _renderer.ViewportOffset -= Direction.Left;
                         break;
 
                     case ConsoleKey.RightArrow:
+                        _renderer.Clear();
                         _renderer.ViewportOffset -= Direction.Right;
                         break;
                 }
@@ -145,10 +150,9 @@ namespace ConwaysGameOfLife
         {
             try
             {
-                _renderer.FullRender = true;
+                _renderer.Clear();
                 _renderer.Render(_simulation.InitialState, GridStateDiff.Null);
-                _renderer.FullRender = false;
-                
+
                 await _simulation.RunAsync(_options.Generations, cancellationTokenSource.Token);
             }
             catch (TaskCanceledException)

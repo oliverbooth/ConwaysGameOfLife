@@ -3,10 +3,16 @@
     /// <summary>
     ///     Represents a renderer which does nothing.
     /// </summary>
-    public sealed class NullGridStateRenderer : GridStateRenderer
+    public sealed class NullRenderer : IRenderer
     {
         /// <inheritdoc />
-        public override void Render(in GridState grid, in GridStateDiff diff)
+        public void Clear()
+        {
+            // do nothing
+        }
+
+        /// <inheritdoc />
+        public void Render(in GridState grid, in GridStateDiff diff)
         {
             // do nothing
         }
