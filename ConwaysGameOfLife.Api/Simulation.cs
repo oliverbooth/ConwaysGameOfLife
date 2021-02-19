@@ -14,10 +14,8 @@ namespace ConwaysGameOfLife.Api
     /// </summary>
     public sealed class Simulation
     {
-        private readonly object _generationLock = new();
         private TickRule _tickRule = new ClassicTickRule();
         private GridStateRenderer _renderer = new NullGridStateRenderer();
-        private volatile int _generation;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Simulation" /> class by initializing all cells as dead.
@@ -39,7 +37,7 @@ namespace ConwaysGameOfLife.Api
         ///     Gets the current state of the grid.
         /// </summary>
         /// <value>A <see cref="GridState" /> representing the current state of the grid.</value>
-        public GridState CurrentState => GetStateAtGeneration(Generation);
+        public GridState CurrentState { get; set; }
 
         /// <summary>
         ///     Gets the current generation of this simulation.
@@ -47,23 +45,7 @@ namespace ConwaysGameOfLife.Api
         /// <value>
         ///     Generations are 0-based. This value represents how many ticks have been performed since the initial state.
         /// </value>
-        public int Generation
-        {
-            get
-            {
-                lock (_generationLock)
-                {
-                    return _generation;
-                }
-            }
-            private set
-            {
-                lock (_generationLock)
-                {
-                    _generation = value;
-                }
-            }
-        }
+        public int Generation { get; set; }
 
         /// <summary>
         ///     Gets the initial state of this simulation.
@@ -137,12 +119,18 @@ namespace ConwaysGameOfLife.Api
         /// <param name="cancellationToken">The cancellation token for the simulation.</param>
         public async Task RunAsync(int generations = -1, CancellationToken cancellationToken = default, bool render = true)
         {
+            CurrentState = InitialState;
+
             for (var generation = Generation; generations == -1 || generation < generations; generation++)
             {
                 if (cancellationToken.IsCancellationRequested)
                     break;
 
                 Generation = generation;
+
+                var currentState = CurrentState;
+                CurrentState = GridState.FromDiff(currentState, _tickRule.Tick(in currentState));
+
                 if (render)
                     Render(Renderer);
 
