@@ -9,6 +9,7 @@
         ///     Renders the grid state using the defined rendering method.
         /// </summary>
         /// <param name="grid">The grid state to render.</param>
-        public abstract void Render(in GridState grid);
+        /// <param name="diff">The difference in state since the previous tick.</param>
+        public abstract void Render(in GridState grid, in GridStateDiff diff);
     }
 }

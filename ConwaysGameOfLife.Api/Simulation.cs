@@ -100,19 +100,6 @@ namespace ConwaysGameOfLife.Api
         }
 
         /// <summary>
-        ///     Renders the current state of the simulation grid using the specified renderer.
-        /// </summary>
-        /// <param name="renderer">The renderer to use for grid rendering.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="renderer" /> is <see langword="null" />.</exception>
-        public void Render(GridStateRenderer renderer)
-        {
-            if (renderer is null)
-                throw new ArgumentNullException(nameof(renderer));
-
-            renderer.Render(CurrentState);
-        }
-
-        /// <summary>
         ///     Runs this simulation, optionally for a specified number of generations.
         /// </summary>
         /// <param name="generations">The number of generations for which to run.</param>
@@ -129,10 +116,11 @@ namespace ConwaysGameOfLife.Api
                 Generation = generation;
 
                 var currentState = CurrentState;
-                CurrentState = GridState.FromDiff(currentState, _tickRule.Tick(in currentState));
+                var diff = _tickRule.Tick(in currentState);
+                CurrentState = GridState.FromDiff(currentState, diff);
 
                 if (render)
-                    Render(Renderer);
+                    Renderer.Render(CurrentState, diff);
 
                 await Task.Delay(TimeSpan.FromSeconds(1.0 / TickRate), cancellationToken);
             }

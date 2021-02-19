@@ -53,7 +53,7 @@ namespace ConwaysGameOfLife
                     initialState = new AsciiGridStateSerializer().Read(stream);
                 }
 
-                new ConsoleGridStateRenderer(_console).Render(initialState);
+                new ConsoleGridStateRenderer(_console).Render(initialState, GridStateDiff.Null);
 
                 while (_console.ReadKey(true).Key != ConsoleKey.Enter) ;
             }
@@ -145,6 +145,10 @@ namespace ConwaysGameOfLife
         {
             try
             {
+                _renderer.FullRender = true;
+                _renderer.Render(_simulation.InitialState, GridStateDiff.Null);
+                _renderer.FullRender = false;
+                
                 await _simulation.RunAsync(_options.Generations, cancellationTokenSource.Token);
             }
             catch (TaskCanceledException)
@@ -230,7 +234,7 @@ namespace ConwaysGameOfLife
                         break;
                 }
 
-                _renderer.Render(gridState);
+                _renderer.Render(gridState, GridStateDiff.Null);
 
                 var cursorX = Math.Clamp(cursorPosition.X, 0, _console.Width - 1);
                 var cursorY = Math.Clamp(cursorPosition.Y, 0, _console.Height - 1);

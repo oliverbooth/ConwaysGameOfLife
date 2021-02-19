@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using System.Linq;
 using Console.Abstractions;
 using ConwaysGameOfLife.Api;
 using ConwaysGameOfLife.Api.Rendering;
@@ -45,23 +46,30 @@ namespace ConwaysGameOfLife.Console
         }
 
         /// <summary>
+        ///     Gets or sets a value indicating whether a full render should happen.
+        /// </summary>
+        public bool FullRender { get; set; } = true;
+
+        /// <summary>
         ///     Gets or sets the viewport offset.
         /// </summary>
         public Size ViewportOffset { get; set; } = Size.Empty;
 
         /// <inheritdoc />
-        public override void Render(in GridState grid)
+        public override void Render(in GridState grid, in GridStateDiff diff)
         {
-            _console.Clear(_dead, _deadChar);
-
-            foreach (var cell in grid.LivingCells)
+            if (FullRender)
+                _console.Clear(_dead);
+            
+            foreach (var cell in FullRender ? grid.LivingCells : diff.ChangedCells)
             {
                 var location = cell.Location + ViewportOffset;
 
                 if (location.X < 0 || location.X >= _console.Width || location.Y < 0 || location.Y >= _console.Height)
                     continue;
 
-                _console.PutChar(_aliveChar, _alive with { X = location.X, Y = location.Y });
+                _console.PutChar(cell.IsAlive ? _aliveChar : _deadChar,
+                    (cell.IsAlive ? _alive : _dead) with { X = location.X, Y = location.Y });
             }
         }
     }
