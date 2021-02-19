@@ -34,7 +34,7 @@ namespace ConwaysGameOfLife.Api
         /// <summary>
         ///     Gets the size of this <see cref="Bounds" /> instance.
         /// </summary>
-        /// <value>A <see cref="System.Drawing.Size "/> representing the size of the bounds.</value>
+        /// <value>A <see cref="System.Drawing.Size " /> representing the size of the bounds.</value>
         public Size Size => new(Max.X - Min.X, Max.Y - Min.Y);
 
         /// <summary>

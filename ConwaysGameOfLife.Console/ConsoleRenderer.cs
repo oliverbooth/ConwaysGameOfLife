@@ -10,11 +10,11 @@ namespace ConwaysGameOfLife.Console
     /// </summary>
     public sealed class ConsoleRenderer : IRenderer
     {
-        private readonly IConsole _console;
-        private readonly char _aliveChar;
-        private readonly char _deadChar;
         private readonly PutData _alive;
+        private readonly char _aliveChar;
+        private readonly IConsole _console;
         private readonly PutData _dead;
+        private readonly char _deadChar;
         private bool _oneShotFullRender;
 
         /// <summary>
@@ -67,15 +67,15 @@ namespace ConwaysGameOfLife.Console
             if (FullRender || _oneShotFullRender)
                 _console.Clear(_dead);
 
-            foreach (var cell in FullRender || _oneShotFullRender ? grid.LivingCells : diff.ChangedCells)
+            foreach (Cell cell in FullRender || _oneShotFullRender ? grid.LivingCells : diff.ChangedCells)
             {
-                var location = cell.Location + ViewportOffset;
+                Point location = cell.Location + ViewportOffset;
 
                 if (location.X < 0 || location.X >= _console.Width || location.Y < 0 || location.Y >= _console.Height)
                     continue;
 
                 _console.PutChar(cell.IsAlive ? _aliveChar : _deadChar,
-                    (cell.IsAlive ? _alive : _dead) with { X = location.X, Y = location.Y });
+                    cell.IsAlive ? _alive : _dead with { X = location.X, Y = location.Y });
             }
 
             _oneShotFullRender = false;

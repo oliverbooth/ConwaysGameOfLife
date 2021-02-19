@@ -17,13 +17,13 @@ namespace ConwaysGameOfLife.Api.Serialization
             if (reader.ReadInt32() != 0xC601)
                 throw new SerializationException("File is not a binary grid state.");
 
-            var count = reader.ReadInt32();
+            int count = reader.ReadInt32();
             var cells = new List<Cell>();
 
-            for (int i = 0; i < count; i++)
+            for (var i = 0; i < count; i++)
             {
-                var x = reader.ReadInt32();
-                var y = reader.ReadInt32();
+                int x = reader.ReadInt32();
+                int y = reader.ReadInt32();
 
                 cells.Add(new Cell(new Point(x, y)));
             }
@@ -37,10 +37,10 @@ namespace ConwaysGameOfLife.Api.Serialization
             using var writer = new BinaryWriter(outputStream);
             writer.Write(0xC601);
 
-            var cells = state.LivingCells;
+            IReadOnlyCollection<Cell>? cells = state.LivingCells;
             writer.Write(cells.Count);
 
-            foreach (var cell in cells)
+            foreach (Cell cell in cells)
             {
                 writer.Write(cell.Location.X);
                 writer.Write(cell.Location.Y);

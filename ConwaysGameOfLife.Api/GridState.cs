@@ -33,7 +33,7 @@ namespace ConwaysGameOfLife.Api
         /// <param name="cells">The cells to consume.</param>
         public GridState(IEnumerable<Cell> cells) : this()
         {
-            var livingCells = cells.Where(c => c.State == CellState.Alive).Select(c => c.Location);
+            IEnumerable<Point>? livingCells = cells.Where(c => c.State == CellState.Alive).Select(c => c.Location);
             _livingCells = new List<Point>(livingCells);
         }
 
@@ -59,7 +59,7 @@ namespace ConwaysGameOfLife.Api
                 Point? minPoint = null;
                 Point? maxPoint = null;
 
-                foreach (var cell in LivingCells.Where(c => c.IsAlive))
+                foreach (Cell cell in LivingCells.Where(c => c.IsAlive))
                 {
                     minPoint = minPoint?.Min(cell.Location) ?? cell.Location;
                     maxPoint = maxPoint?.Max(cell.Location) ?? cell.Location;
@@ -99,13 +99,13 @@ namespace ConwaysGameOfLife.Api
         /// <param name="previousState">The previous state on which to act.</param>
         /// <param name="diff">The diff to apply.</param>
         /// <returns>
-        ///     A new <see cref="GridState" /> which applies <paramref name="diff" /> upon <paramref name="previousState"/>.
+        ///     A new <see cref="GridState" /> which applies <paramref name="diff" /> upon <paramref name="previousState" />.
         /// </returns>
         public static GridState FromDiff(GridState previousState, GridStateDiff diff)
         {
             var livingCells = new List<Cell>(previousState.LivingCells);
 
-            foreach (var cell in diff.ChangedCells)
+            foreach (Cell cell in diff.ChangedCells)
             {
                 switch (cell.State)
                 {
@@ -156,7 +156,7 @@ namespace ConwaysGameOfLife.Api
         /// <remarks>This method does not ignore dead cells. Both living and dead neighbours are captured.</remarks>
         public readonly IReadOnlyCollection<Cell> GetNeighbours(Cell cell)
         {
-            var directions = new[]
+            Point[]? directions = new[]
             {
                 cell.Location + Direction.Up,
                 cell.Location + Direction.Down,
@@ -168,7 +168,7 @@ namespace ConwaysGameOfLife.Api
                 cell.Location + Direction.Down + Direction.Left
             };
 
-            var livingCells = _livingCells ?? new List<Point>();
+            List<Point>? livingCells = _livingCells ?? new List<Point>();
             return directions.Select(direction =>
                                   new Cell(direction, livingCells.Contains(direction) ? CellState.Alive : CellState.Dead))
                              .ToArray();
@@ -182,7 +182,7 @@ namespace ConwaysGameOfLife.Api
         public void SetStateAt(Point cell, CellState state)
         {
             _livingCells ??= new List<Point>();
-            var isAlive = _livingCells.Contains(cell);
+            bool isAlive = _livingCells.Contains(cell);
 
             if (!isAlive && state == CellState.Alive)
                 _livingCells.Add(cell);
@@ -214,6 +214,6 @@ namespace ConwaysGameOfLife.Api
         public override bool Equals(object? obj) => obj is GridState other && Equals(other);
 
         /// <inheritdoc />
-        public override int GetHashCode() => (_livingCells != null ? _livingCells.GetHashCode() : 0);
+        public override int GetHashCode() => _livingCells != null ? _livingCells.GetHashCode() : 0;
     }
 }

@@ -14,8 +14,8 @@ namespace ConwaysGameOfLife.Api
     /// </summary>
     public sealed class Simulation
     {
-        private TickRule _tickRule = new ClassicTickRule();
         private IRenderer _renderer = new NullRenderer();
+        private TickRule _tickRule = new ClassicTickRule();
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Simulation" /> class by initializing all cells as dead.
@@ -54,23 +54,6 @@ namespace ConwaysGameOfLife.Api
         public GridState InitialState { get; }
 
         /// <summary>
-        ///     Gets or sets the tick rate of the simulation.
-        /// </summary>
-        /// <value>The tick rate of the simulation.</value>
-        public double TickRate { get; set; } = 1.0;
-
-        /// <summary>
-        ///     Gets or sets the tick rule for this 
-        /// </summary>
-        /// <value>The tick rule.</value>
-        [SuppressMessage("ReSharper", "ConstantNullCoalescingCondition", Justification = "Assigned value may be null")]
-        public TickRule TickRule
-        {
-            get => _tickRule;
-            set => _tickRule = value ?? new NullTickRule();
-        }
-
-        /// <summary>
         ///     Gets or sets the grid state renderer.
         /// </summary>
         /// <value>The renderer.</value>
@@ -79,6 +62,23 @@ namespace ConwaysGameOfLife.Api
         {
             get => _renderer;
             set => _renderer = value ?? new NullRenderer();
+        }
+
+        /// <summary>
+        ///     Gets or sets the tick rate of the simulation.
+        /// </summary>
+        /// <value>The tick rate of the simulation.</value>
+        public double TickRate { get; set; } = 1.0;
+
+        /// <summary>
+        ///     Gets or sets the tick rule for this
+        /// </summary>
+        /// <value>The tick rule.</value>
+        [SuppressMessage("ReSharper", "ConstantNullCoalescingCondition", Justification = "Assigned value may be null")]
+        public TickRule TickRule
+        {
+            get => _tickRule;
+            set => _tickRule = value ?? new NullTickRule();
         }
 
         /// <summary>
@@ -91,7 +91,7 @@ namespace ConwaysGameOfLife.Api
         /// </returns>
         public GridState GetStateAtGeneration(int generation)
         {
-            var state = InitialState;
+            GridState state = InitialState;
 
             for (var g = 0; g < generation; g++)
                 state = GridState.FromDiff(state, _tickRule.Tick(in state));
@@ -108,15 +108,15 @@ namespace ConwaysGameOfLife.Api
         {
             CurrentState = InitialState;
 
-            for (var generation = Generation; generations == -1 || generation < generations; generation++)
+            for (int generation = Generation; generations == -1 || generation < generations; generation++)
             {
                 if (cancellationToken.IsCancellationRequested)
                     break;
 
                 Generation = generation;
 
-                var currentState = CurrentState;
-                var diff = _tickRule.Tick(in currentState);
+                GridState currentState = CurrentState;
+                GridStateDiff diff = _tickRule.Tick(in currentState);
                 CurrentState = GridState.FromDiff(currentState, diff);
 
                 if (render)
@@ -138,7 +138,7 @@ namespace ConwaysGameOfLife.Api
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="serializationMode" /> is invalid.</exception>
         public void Save(string file, SerializationMode serializationMode = SerializationMode.Ascii)
         {
-            using var stream = File.Create(file);
+            using FileStream? stream = File.Create(file);
             Save(stream, serializationMode switch
             {
                 SerializationMode.Ascii => new AsciiGridStateSerializer(),

@@ -9,7 +9,7 @@
         ///     Clears the render output.
         /// </summary>
         void Clear();
-        
+
         /// <summary>
         ///     Renders the grid state using the defined rendering method.
         /// </summary>

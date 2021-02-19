@@ -5,7 +5,7 @@ using Console.Abstractions;
 namespace ConwaysGameOfLife.Console
 {
     /// <summary>
-    ///     Represents a wrapper for <see cref="PutCharData" /> so that <c>with</c> expressions can be used. 
+    ///     Represents a wrapper for <see cref="PutCharData" /> so that <c>with</c> expressions can be used.
     /// </summary>
     public sealed record PutData
     {
@@ -22,18 +22,6 @@ namespace ConwaysGameOfLife.Console
         public ConsoleColor Foreground { get; set; }
 
         /// <summary>
-        ///     Gets or sets the X coordinate.
-        /// </summary>
-        /// <value>The X coordinate.</value>
-        public int X { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the Y coordinate.
-        /// </summary>
-        /// <value>The Y coordinate.</value>
-        public int Y { get; set; }
-
-        /// <summary>
         ///     Gets or sets the coordinates.
         /// </summary>
         /// <value>A <see cref="Point" /> representing the coordinates.</value>
@@ -46,6 +34,18 @@ namespace ConwaysGameOfLife.Console
                 Y = value.Y;
             }
         }
+
+        /// <summary>
+        ///     Gets or sets the X coordinate.
+        /// </summary>
+        /// <value>The X coordinate.</value>
+        public int X { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the Y coordinate.
+        /// </summary>
+        /// <value>The Y coordinate.</value>
+        public int Y { get; set; }
 
         /// <summary>
         ///     Implicitly converts a <see cref="PutData" /> instance to a new instance of <see cref="PutCharData" />.

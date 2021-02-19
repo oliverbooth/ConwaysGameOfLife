@@ -52,7 +52,7 @@ namespace ConwaysGameOfLife.Api.Serialization
         public override void Write(Stream outputStream, GridState state)
         {
             using var writer = new StreamWriter(outputStream, Encoding.ASCII);
-            var bounds = state.Bounds;
+            Bounds bounds = state.Bounds;
 
             for (int y = bounds.Min.Y; y <= bounds.Max.Y; y++)
             {
